@@ -1,4 +1,4 @@
-use as_result::*;
+use as_result::IntoResult;
 use async_process::{Child, ChildStdout, Command};
 use async_stream::stream;
 use futures::io::BufReader;
@@ -11,11 +11,17 @@ use std::{io, pin::Pin};
 #[as_mut(forward)]
 pub struct Dpkg(Command);
 
-impl Dpkg {
-    pub fn new() -> Self {
+impl Default for Dpkg {
+    fn default() -> Self {
         let mut cmd = Command::new("dpkg");
         cmd.env("LANG", "C");
         Self(cmd)
+    }
+}
+
+impl Dpkg {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn configure_all(mut self) -> Self {
@@ -34,11 +40,17 @@ pub type InstalledEvent = Pin<Box<dyn Stream<Item = String>>>;
 #[as_mut(forward)]
 pub struct DpkgQuery(Command);
 
-impl DpkgQuery {
-    pub fn new() -> Self {
+impl Default for DpkgQuery {
+    fn default() -> Self {
         let mut cmd = Command::new("dpkg-query");
         cmd.env("LANG", "C");
         Self(cmd)
+    }
+}
+
+impl DpkgQuery {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub async fn show_installed<I, S>(mut self, packages: I) -> io::Result<(Child, InstalledEvent)>

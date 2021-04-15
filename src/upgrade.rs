@@ -55,7 +55,7 @@ impl AptUpgradeEvent {
     pub fn from_dbus_map<K: AsRef<str>, V: AsRef<str> + Into<Box<str>>>(
         mut map: impl Iterator<Item = (K, V)>,
     ) -> Result<Self, ()> {
-        use self::AptUpgradeEvent::*;
+        use self::AptUpgradeEvent::{Processing, Progress, SettingUp, Unpacking, WaitingOnLock};
 
         let (key, value) = match map.next() {
             Some(value) => value,

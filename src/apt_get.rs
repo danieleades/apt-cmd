@@ -1,6 +1,6 @@
 use crate::request::{Request, RequestError};
 use crate::AptUpgradeEvent;
-use as_result::*;
+use as_result::{IntoResult, MapResult};
 use async_process::{Child, ChildStdout, Command, ExitStatus};
 use async_stream::stream;
 use futures::io::BufReader;
@@ -27,16 +27,22 @@ pub type UpgradeEvents = Pin<Box<dyn Stream<Item = AptUpgradeEvent>>>;
 #[as_mut(forward)]
 pub struct AptGet(Command);
 
-impl AptGet {
-    pub fn new() -> Self {
+impl Default for AptGet {
+    fn default() -> Self {
         let mut cmd = Command::new("apt-get");
         cmd.env("LANG", "C");
         Self(cmd)
     }
+}
+
+impl AptGet {
+    pub fn new() -> Self {
+        Self::default()
+    }
 
     pub fn allow_downgrades(mut self) -> Self {
         self.arg("--allow-downgrades");
-        return self;
+        self
     }
 
     pub fn autoremove(mut self) -> Self {
@@ -51,7 +57,7 @@ impl AptGet {
 
     pub fn force(mut self) -> Self {
         self.arg("-y");
-        return self;
+        self
     }
 
     pub async fn install<I, S>(mut self, packages: I) -> io::Result<()>
@@ -67,7 +73,7 @@ impl AptGet {
 
     pub fn noninteractive(mut self) -> Self {
         self.env("DEBIAN_FRONTEND", "noninteractive");
-        return self;
+        self
     }
 
     pub async fn update(mut self) -> io::Result<()> {

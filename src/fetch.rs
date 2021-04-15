@@ -83,7 +83,7 @@ impl PackageFetcher {
 
     pub fn concurrent(mut self, concurrent: usize) -> Self {
         self.concurrent = concurrent;
-        return self;
+        self
     }
 
     pub fn delay_between(mut self, delay: u64) -> Self {

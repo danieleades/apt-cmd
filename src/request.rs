@@ -58,9 +58,9 @@ impl FromStr for Request {
         // We need to remove the single quotes that apt-get encloses the URI within.
         if uri.len() <= 3 {
             return Err(RequestError::UriInvalid(uri.into()));
-        } else {
-            uri = &uri[1..uri.len() - 1];
         }
+
+        uri = &uri[1..uri.len() - 1];
 
         let name = words
             .next()

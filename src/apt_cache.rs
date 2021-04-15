@@ -59,11 +59,17 @@ fn policies(lines: impl Stream<Item = io::Result<String>>) -> impl Stream<Item =
 #[as_mut(forward)]
 pub struct AptCache(Command);
 
-impl AptCache {
-    pub fn new() -> Self {
+impl Default for AptCache {
+    fn default() -> Self {
         let mut cmd = Command::new("apt-cache");
         cmd.env("LANG", "C");
         Self(cmd)
+    }
+}
+
+impl AptCache {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub async fn depends<I, S>(mut self, packages: I) -> io::Result<(Child, ChildStdout)>

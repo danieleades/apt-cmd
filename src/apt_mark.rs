@@ -6,11 +6,17 @@ use std::io;
 #[as_mut(forward)]
 pub struct AptMark(Command);
 
-impl AptMark {
-    pub fn new() -> Self {
+impl Default for AptMark {
+    fn default() -> Self {
         let mut cmd = Command::new("apt-mark");
         cmd.env("LANG", "C");
         Self(cmd)
+    }
+}
+
+impl AptMark {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub async fn hold<I, S>(mut self, packages: I) -> io::Result<()>
