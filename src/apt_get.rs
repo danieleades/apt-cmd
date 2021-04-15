@@ -8,6 +8,7 @@ use futures::prelude::*;
 use futures::stream::StreamExt;
 use futures_util::pin_mut;
 use std::{collections::HashSet, io, pin::Pin};
+use std::ffi::OsStr;
 
 #[derive(Debug)]
 pub enum UpdateEvent {
@@ -57,7 +58,7 @@ impl AptGet {
     pub async fn install<I, S>(mut self, packages: I) -> io::Result<()>
     where
         I: IntoIterator<Item = S>,
-        S: AsRef<std::ffi::OsStr>,
+        S: AsRef<OsStr>,
     {
         self.arg("install");
         self.args(packages);
@@ -108,7 +109,7 @@ impl AptGet {
     pub async fn remove<I, S>(mut self, packages: I) -> io::Result<()>
     where
         I: IntoIterator<Item = S>,
-        S: AsRef<std::ffi::OsStr>,
+        S: AsRef<OsStr>,
     {
         self.arg("remove");
         self.args(packages);
